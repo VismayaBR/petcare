@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petcare_new/User/NavigationBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddPet extends StatefulWidget {
   const AddPet({super.key});
@@ -357,8 +358,22 @@ class _AddPetState extends State<AddPet> {
                           String currentMonth = monthNames[DateTime.now().month - 1];
 
                           await uploadImage(); // Make sure to call uploadImage before adding to Firestore
-
+                          SharedPreferences spref = await SharedPreferences.getInstance();
+                          var sp = spref.getString('id');
                           await FirebaseFirestore.instance.collection("petlist").add({
+                            'user_id':sp,
+                            "name": name,
+                            "age": age,
+                            "height": height,
+                            "weight": weight,
+                            "heartrate": heartrate,
+                            "bp": bp,
+                            "month": currentMonth,
+                            'image': imageUrl
+                          });
+                           await FirebaseFirestore.instance.collection("petlist").add({
+                            'user_id':sp,
+                           
                             "name": name,
                             "age": age,
                             "height": height,

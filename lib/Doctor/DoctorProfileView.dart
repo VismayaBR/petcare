@@ -362,7 +362,7 @@ class _ProfileViewState extends State<ProfileView> {
                                       'from': selectedTime.format(context),
                                       'to': selectedTime1.format(context),
                                       'date': dt1,
-                                      'token':token.text,
+                                      'token':int.parse(token.text),
                                      ' init_token': token.text
                                     });
                                   },

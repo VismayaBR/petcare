@@ -42,6 +42,7 @@ class _AddAppointmentsState extends State<AddAppointments> {
   String? token;
   var tok;
   Future<void> getToken() async {
+
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('slots')
         .where('doc_id', isEqualTo: widget.id)
@@ -51,6 +52,9 @@ class _AddAppointmentsState extends State<AddAppointments> {
       // Access the first document from the snapshot
       DocumentSnapshot document = snapshot.docs.first;
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+            print('________________________${data}____________________');
+
+      print('________________________${data['init_token']}____________________');
       tok = (int.parse(data['init_token'].toString()) + 1).toString();
       setState(() {
         toValue = data['to'].toString();

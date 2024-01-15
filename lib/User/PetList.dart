@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:custom_rating_bar/custom_rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:petcare_new/User/AddPetUpdates.dart';
 import 'package:petcare_new/User/Add_Pet.dart';
-import 'package:petcare_new/Doctor/DoctorProfileView.dart';
 import 'package:petcare_new/User/User_Profile.dart';
+import 'package:petcare_new/User/petView.dart';
 import 'package:petcare_new/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -122,7 +120,7 @@ class _PetListState extends State<PetList> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AddPetUpdates(pet_id:documents[index].id),
+                                  builder: (context) => PetView(pet_id:documents[index].id),
                                 ));
                           },
                           child: Container(
