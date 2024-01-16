@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petcare_new/User/Add_Pet.dart';
 import 'package:petcare_new/User/User_Profile.dart';
-import 'package:petcare_new/User/petView.dart';
+import 'package:petcare_new/User/graph/petView.dart';
 import 'package:petcare_new/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

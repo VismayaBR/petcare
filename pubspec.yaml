@@ -45,7 +45,7 @@ dependencies:
   fluttertoast: ^8.2.4
   shared_preferences: ^2.2.2
   syncfusion_flutter_charts: any
-  fl_chart: ^0.41.0
+  fl_chart: ^0.66.0
   image_picker: ^1.0.7
   firebase_storage: ^11.6.0
   flutter_rating_bar: ^4.0.1
