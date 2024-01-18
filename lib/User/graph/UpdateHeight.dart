@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:petcare_new/User/graph/petView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateHeight extends StatefulWidget {
@@ -97,6 +98,10 @@ class _UpdateHeightState extends State<UpdateHeight> {
                         'month': selectedMonth,
                         'height': height.text,
                       });
+
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+                          return PetView(pet_id: widget.pet_id);
+                        }));
 
                       // Remove loading indicator or provide success feedback
 

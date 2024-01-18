@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:petcare_new/User/graph/petView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateBp extends StatefulWidget {
@@ -97,7 +98,9 @@ class _UpdateBpState extends State<UpdateBp> {
                         'month': selectedMonth,
                         'bp': bp.text,
                       });
-
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+                          return PetView(pet_id: widget.pet_id);
+                        }));
                       // Remove loading indicator or provide success feedback
 
                       // Perform the save action

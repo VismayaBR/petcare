@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:petcare_new/User/graph/petView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateWeight extends StatefulWidget {
@@ -20,8 +21,6 @@ class _UpdateWeightState extends State<UpdateWeight> {
     weight.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -91,13 +90,18 @@ class _UpdateWeightState extends State<UpdateWeight> {
                       SharedPreferences spref =
                           await SharedPreferences.getInstance();
                       var sp = spref.getString('id');
-                      await FirebaseFirestore.instance.collection('weight').add({
+                      await FirebaseFirestore.instance
+                          .collection('weight')
+                          .add({
                         'user_id': sp,
                         'pet_id': widget.pet_id,
                         'month': selectedMonth,
                         'weight': weight.text,
                       });
-
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return PetView(pet_id: widget.pet_id);
+                      }));
                       // Remove loading indicator or provide success feedback
 
                       // Perform the save action
