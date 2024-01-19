@@ -69,7 +69,7 @@ class _UpdateHrState extends State<UpdateHr> {
                 controller: bp,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Enter Bp',
+                  labelText: 'Enter Bp in BPM',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:petcare_new/Doctor/Doctor_profile.dart';
+import 'package:petcare_new/User/User_Profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -192,7 +194,7 @@ class _ProfileViewState extends State<ProfileView> {
                           children: [
                             Text('Location',
                                 style: GoogleFonts.poppins(fontSize: 13)),
-                            Text('widget.location',
+                            Text(location,
                                 style: GoogleFonts.poppins(fontSize: 13)),
                           ],
                         ),
@@ -217,18 +219,25 @@ class _ProfileViewState extends State<ProfileView> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(2.0),
-                          child: Container(
-                            height: 30,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Edit Profile',
-                                style: GoogleFonts.poppins(fontSize: 10),
+                          child: InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx){
+                                return DoctorProfile();
+                              }));
+                            },
+                            child: Container(
+                              height: 30,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Edit Profile',
+                                  style: GoogleFonts.poppins(fontSize: 10),
+                                ),
                               ),
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Color.fromARGB(255, 233, 222, 219),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Color.fromARGB(255, 233, 222, 219),
+                              ),
                             ),
                           ),
                         ),

@@ -71,7 +71,7 @@ class _UpdateBpState extends State<UpdateBp> {
                 controller: bp,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Enter Bp',
+                  labelText: 'Enter Bp in mmHg',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {

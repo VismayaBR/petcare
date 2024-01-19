@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_rating_bar/custom_rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:petcare_new/User/Rating.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Appointments extends StatefulWidget {
@@ -13,7 +14,7 @@ class Appointments extends StatefulWidget {
 
 class _AppointmentsState extends State<Appointments> {
   List<Map<String, dynamic>> doctorNames = [];
-
+  var d_id;
   Future<void> getData() async {
     SharedPreferences spref = await SharedPreferences.getInstance();
     var userId = spref.getString('id');
@@ -22,13 +23,15 @@ class _AppointmentsState extends State<Appointments> {
     try {
       // Fetch data from the 'bookings' collection
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('bookings').where('user_id',isEqualTo: userId).get();
+          .collection('bookings')
+          .where('user_id', isEqualTo: userId)
+          .get();
 
       // Extract data from the query result
       List<Map<String, dynamic>> bookings = querySnapshot.docs
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
-print(bookings);
+      print(bookings);
       // Fetch user details for each booking
       for (var booking in bookings) {
         var userSnapshot = await FirebaseFirestore.instance
@@ -39,14 +42,16 @@ print(bookings);
         var userData = userSnapshot.data() as Map<String, dynamic>;
         print(userData);
 
+        d_id = booking['doctot_id'];
+
         // Combine user details with booking details
         doctorNames.add({
           'doctor_id': booking['doctot_id'],
           'doctor_name': userData['name'],
-          'email':userData['email'],
-          'token':booking['token'],
-          'date':booking['date'],
-          'time':booking['time']
+          'email': userData['email'],
+          'token': booking['token'],
+          'date': booking['date'],
+          'time': booking['time']
           // Add other fields as needed
         });
       }
@@ -85,32 +90,50 @@ print(bookings);
                   itemCount: doctorNames.length,
                   itemBuilder: (context, index) {
                     return Card(
-                      
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ListTile(
-                          
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (ctx) {
+                              return Rating(did: doctorNames[index]['doctor_id']);
+                            }));
+                          },
                           trailing: Column(
                             children: [
-                              Text('Token : ${doctorNames[index]['token'].toString()}',style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.bold),),
-                              Text(doctorNames[index]['date'],style: GoogleFonts.poppins(fontSize: 13),),
-                              Expanded(child: Text(doctorNames[index]['time'],style: GoogleFonts.poppins(fontSize: 13),))
+                              Text(
+                                'Token : ${doctorNames[index]['token'].toString()}',
+                                style: GoogleFonts.poppins(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                doctorNames[index]['date'],
+                                style: GoogleFonts.poppins(fontSize: 13),
+                              ),
+                              Expanded(
+                                  child: Text(
+                                doctorNames[index]['time'],
+                                style: GoogleFonts.poppins(fontSize: 13),
+                              ))
                             ],
                           ),
                           title: Text(doctorNames[index]['doctor_name']),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(doctorNames[index]['email'],style: GoogleFonts.poppins(fontSize: 13),),
-                               RatingBar(
-                                  filledIcon: Icons.star,
-                                  size: 20,
-                                  emptyIcon: Icons.star_border,
-                                  onRatingChanged: (value) =>
-                                      debugPrint('$value'),
-                                  initialRating: 3,
-                                  maxRating: 5,
-                                )
+                              Text(
+                                doctorNames[index]['email'],
+                                style: GoogleFonts.poppins(fontSize: 13),
+                              ),
+                              // RatingBar(
+                              //   filledIcon: Icons.star,
+                              //   size: 20,
+                              //   emptyIcon: Icons.star_border,
+                              //   onRatingChanged: (value) =>
+                              //       debugPrint('$value'),
+                              //   initialRating: 3,
+                              //   maxRating: 5,
+                              // )
                             ],
                           ),
                           // Add other fields as needed

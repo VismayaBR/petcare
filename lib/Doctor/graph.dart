@@ -7,15 +7,15 @@ import 'package:petcare_new/User/graph/hr.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
-class PetView extends StatefulWidget {
+class Graph extends StatefulWidget {
   String pet_id;
-  PetView({Key? key, required this.pet_id}) : super(key: key);
+  Graph({Key? key, required this.pet_id}) : super(key: key);
 
   @override
-  State<PetView> createState() => _PetViewState();
+  State<Graph> createState() => _GraphState();
 }
 
-class _PetViewState extends State<PetView> {
+class _GraphState extends State<Graph> {
   var petName = "Loading..."; // Initial placeholder value
   var age = "Loading..."; // Initial placeholder value
   bool isLoading = true;
@@ -47,7 +47,7 @@ class _PetViewState extends State<PetView> {
     var sp = spref.getString('id');
     QuerySnapshot weightSnapshot = await FirebaseFirestore.instance
         .collection('weight')
-        .where('user_id', isEqualTo: sp)
+      
         .where('pet_id', isEqualTo: widget.pet_id)
         .get();
 
@@ -105,7 +105,7 @@ class _PetViewState extends State<PetView> {
     var sp = spref.getString('id');
     QuerySnapshot heightSnapshot = await FirebaseFirestore.instance
         .collection('height')
-        .where('user_id', isEqualTo: sp)
+      
         .where('pet_id', isEqualTo: widget.pet_id)
         .get();
 
@@ -158,18 +158,19 @@ class _PetViewState extends State<PetView> {
     }
   }
 
-  Future<void> fetchHr() async {
+
+ Future<void> fetchHr() async {
     SharedPreferences spref = await SharedPreferences.getInstance();
     var sp = spref.getString('id');
     QuerySnapshot hrSnapshot = await FirebaseFirestore.instance
         .collection('hr')
-        .where('user_id', isEqualTo: sp)
+       
         .where('pet_id', isEqualTo: widget.pet_id)
         .get();
 
     setState(() {
       // Map weight and month data
-      hrData = hrSnapshot.docs.map((doc) => doc['hr']).toList();
+      hrData =hrSnapshot.docs.map((doc) => doc['hr']).toList();
       monthData3 = hrSnapshot.docs.map((doc) => doc['month']).toList();
 
       // Convert month names to numerical values
@@ -221,7 +222,7 @@ class _PetViewState extends State<PetView> {
     var sp = spref.getString('id');
     QuerySnapshot bpSnapshot = await FirebaseFirestore.instance
         .collection('bp')
-        .where('user_id', isEqualTo: sp)
+      
         .where('pet_id', isEqualTo: widget.pet_id)
         .get();
 
@@ -361,35 +362,28 @@ class _PetViewState extends State<PetView> {
               child: Container(
                 child: Column(
                   children: [
-                    if (weightData.isEmpty)
-                      Text(
-                        "Add your pet's weight",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      )
-                    else
-                      SfSparkLineChart(
-                        trackball: SparkChartTrackball(
-                          activationMode: SparkChartActivationMode.tap,
-                        ),
-                        marker: SparkChartMarker(
-                          displayMode: SparkChartMarkerDisplayMode.all,
-                        ),
-                        labelDisplayMode: SparkChartLabelDisplayMode.all,
-                        data: weightData.isNotEmpty && monthData.isNotEmpty
-                            ? List.generate(weightData.length, (index) {
-                                // Ensure index is within valid range
-                                if (index >= 0 && index < monthData.length) {
-                                  return double.parse(
-                                      weightData[index].toString());
-                                } else {
-                                  return 0.0; // Provide a default value if index is out of range
-                                }
-                              })
-                            : [
-                                0.0
-                              ], // Provide a default value if either list is empty
+                    SfSparkLineChart(
+                      trackball: SparkChartTrackball(
+                        activationMode: SparkChartActivationMode.tap,
                       ),
+                      marker: SparkChartMarker(
+                        displayMode: SparkChartMarkerDisplayMode.all,
+                      ),
+                      labelDisplayMode: SparkChartLabelDisplayMode.all,
+                      data: weightData.isNotEmpty && monthData.isNotEmpty
+                          ? List.generate(weightData.length, (index) {
+                              // Ensure index is within valid range
+                              if (index >= 0 && index < monthData.length) {
+                                return double.parse(
+                                    weightData[index].toString());
+                              } else {
+                                return 0.0; // Provide a default value if index is out of range
+                              }
+                            })
+                          : [
+                              0.0
+                            ], // Provide a default value if either list is empty
+                    ),
                     SizedBox(height: 10),
                     Text('Weight and Month Data'),
                     SingleChildScrollView(
@@ -419,46 +413,13 @@ class _PetViewState extends State<PetView> {
             ),
 
             // -------------UPDATE BUTTON-----------------//
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, right: 12),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return UpdateWeight(pet_id: widget.pet_id);
-                      }));
-                    },
-                    child: Container(
-                      color: Colors.blue,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Update',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-
+          
             Text('Height Data'),
             Padding(
               padding: const EdgeInsets.all(25.0),
               child: Container(
                 child: Column(
                   children: [
-                      if (heightData.isEmpty)
-                      Text(
-                        "Add your pet's height",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      )
-                    else
                     SfSparkLineChart(
                       trackball: SparkChartTrackball(
                         activationMode: SparkChartActivationMode.tap,
@@ -510,45 +471,13 @@ class _PetViewState extends State<PetView> {
             ),
 
             // -------------UPDATE BUTTON-----------------//
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, right: 12),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return UpdateHeight(pet_id: widget.pet_id);
-                      }));
-                    },
-                    child: Container(
-                      color: Colors.blue,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Update',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+           
             Text('Bp Data'),
             Padding(
               padding: const EdgeInsets.all(25.0),
               child: Container(
                 child: Column(
                   children: [
-                      if (bpData.isEmpty)
-                      Text(
-                        "Add your pet's bp",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      )
-                    else
                     SfSparkLineChart(
                       trackball: SparkChartTrackball(
                         activationMode: SparkChartActivationMode.tap,
@@ -599,45 +528,13 @@ class _PetViewState extends State<PetView> {
             ),
 
             // -------------UPDATE BUTTON-----------------//
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, right: 12),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return UpdateBp(pet_id: widget.pet_id);
-                      }));
-                    },
-                    child: Container(
-                      color: Colors.blue,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Update',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Text('HeartRate Data'),
+           
+             Text('HeartRate Data'),
             Padding(
               padding: const EdgeInsets.all(25.0),
               child: Container(
                 child: Column(
                   children: [
-                      if (hrData.isEmpty)
-                      Text(
-                        "Add your pet's heart rate",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      )
-                    else
                     SfSparkLineChart(
                       trackball: SparkChartTrackball(
                         activationMode: SparkChartActivationMode.tap,
@@ -688,32 +585,7 @@ class _PetViewState extends State<PetView> {
             ),
 
             // -------------UPDATE BUTTON-----------------//
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, right: 12),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return UpdateHr(pet_id: widget.pet_id);
-                      }));
-                    },
-                    child: Container(
-                      color: Colors.blue,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Update',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+         
           ],
         ),
       ),

@@ -32,42 +32,36 @@ class AddAppointments extends StatefulWidget {
 }
 
 class _AddAppointmentsState extends State<AddAppointments> {
-  @override
-  void initState() {
-    getToken();
-  }
-
+  Map<String, dynamic>? selectedPetMap;
   String? toValue;
   String? fromValue;
   String? token;
   var tok;
-  Future<void> getToken() async {
 
+  @override
+  void initState() {
+    getToken();
+    petDetails();
+  }
+
+  Future<void> getToken() async {
+     String dt1 =
+                    DateFormat('yyyy-MM-dd').format(DateTime.now());
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('slots')
         .where('doc_id', isEqualTo: widget.id)
+        .where('date',isEqualTo:dt1 )
         .get();
 
     if (snapshot.docs.isNotEmpty) {
-      // Access the first document from the snapshot
       DocumentSnapshot document = snapshot.docs.first;
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-            print('________________________${data}____________________');
-
-      print('________________________${data[' init_token']}____________________');
       tok = (int.parse(data[' init_token'].toString()) + 1).toString();
       setState(() {
         toValue = data['to'].toString();
         fromValue = data['from'].toString();
         token = data['token'].toString();
-
-        print(tok);
-        print('_____$token');
-        print(
-            '**************************${(int.parse(tok) - int.parse(token.toString())).toString()}');
       });
-
-      print('To: $toValue');
     }
   }
 
@@ -82,7 +76,8 @@ class _AddAppointmentsState extends State<AddAppointments> {
               children: <Widget>[
                 Text('Your appointment has been booked successfully.'),
                 Text(
-                    'Token No : ${(int.parse(tok) - int.parse(token.toString())).toString()} '),
+                  'Token No : ${(int.parse(tok) - int.parse(token.toString())).toString()} ',
+                ),
               ],
             ),
           ),
@@ -90,11 +85,12 @@ class _AddAppointmentsState extends State<AddAppointments> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                // await _updateDoctorToken();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (ctx) {
-                  return UserDoctorlist();
-                }));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (ctx) {
+                    return UserDoctorlist();
+                  }),
+                );
               },
               child: Text('OK'),
             ),
@@ -114,8 +110,8 @@ class _AddAppointmentsState extends State<AddAppointments> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: 120,
-                width: 120,
+                height: 80,
+                width: 80,
                 child: CircleAvatar(
                   backgroundImage: AssetImage('asset/male-avatar.jpg'),
                 ),
@@ -131,7 +127,7 @@ class _AddAppointmentsState extends State<AddAppointments> {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Container(
-              height: 220,
+              height: 180,
               width: double.infinity,
               color: Color.fromARGB(255, 247, 238, 235),
               child: Column(
@@ -161,20 +157,6 @@ class _AddAppointmentsState extends State<AddAppointments> {
                         children: [
                           Text('Department'),
                           Text(widget.department),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Qualification'),
-                          Text(widget.quali),
                         ],
                       ),
                     ),
@@ -249,27 +231,54 @@ class _AddAppointmentsState extends State<AddAppointments> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: const Color.fromARGB(255, 95, 62, 50),
-                          ),
-                          height: 50,
-                          width: 50,
-                          child: Center(
-                            child: Text(
-                              token.toString() ?? '',
-                              style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: const Color.fromARGB(255, 95, 62, 50),
+                        ),
+                        height: 50,
+                        width: 50,
+                        child: Center(
+                          child: Text(
+                            token.toString() ?? '',
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 ),
               ),
               width: double.infinity,
               color: Color.fromARGB(255, 247, 238, 235),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 12, right: 12, top: 5, bottom: 5),
+            child: Container(
+              color: Color.fromARGB(255, 247, 238, 235),
+              child: DropdownButton<Map<String, dynamic>>(
+                items: petDetailsList.map((Map<String, dynamic> pet) {
+                  return DropdownMenuItem<Map<String, dynamic>>(
+                    value: pet,
+                    child: Text(pet['name']),
+                  );
+                }).toList(),
+                onChanged: (selectedPet) {
+                  setState(() {
+                    selectedPetMap = selectedPet;
+                  });
+                  print(
+                      'Selected Pet: ${selectedPet!['name']}, ID: ${selectedPet['id']}');
+                },
+                value: selectedPetMap,
+                isExpanded: true,
+                hint: Text('Select a pet'), // Displayed when no option is selected
+              ),
             ),
           ),
           Padding(
@@ -282,28 +291,30 @@ class _AddAppointmentsState extends State<AddAppointments> {
                     .get();
 
                 for (QueryDocumentSnapshot document in querySnapshot.docs) {
-                  // Get the reference for each document
                   DocumentReference docRef = FirebaseFirestore.instance
                       .collection('slots')
                       .doc(document.id);
 
-                  // Update the 'token' field
                   await docRef.update({'token': FieldValue.increment(-1)});
                 }
 
-                SharedPreferences spref = await SharedPreferences.getInstance();
+                SharedPreferences spref =
+                    await SharedPreferences.getInstance();
                 var userId = spref.getString('user_id');
-                print('object');
-                String dt1 = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                String dt1 =
+                    DateFormat('yyyy-MM-dd').format(DateTime.now());
                 String tm1 = DateFormat('HH:mm').format(DateTime.now());
+
                 FirebaseFirestore.instance.collection('bookings').add({
                   'doctot_id': widget.id,
                   'user_id': userId,
                   'status': '0',
-                  'token':
-                      (int.parse(tok) - int.parse(token.toString())).toString(),
+                  'token': (int.parse(tok) - int.parse(token.toString()))
+                      .toString(),
                   'date': dt1,
-                  'time': tm1
+                  'time': tm1,
+                  'pet': selectedPetMap != null ? selectedPetMap!['id'] : null,
+                  'img': selectedPetMap != null ? selectedPetMap!['image'] : null,
                 });
 
                 _showBookingDialog();
@@ -319,5 +330,27 @@ class _AddAppointmentsState extends State<AddAppointments> {
         ],
       ),
     );
+  }
+
+  List<Map<String, dynamic>> petDetailsList = [];
+
+  Future<void> petDetails() async {
+    SharedPreferences spref = await SharedPreferences.getInstance();
+    var sp = spref.getString('id');
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('petlist')
+        .where('user_id', isEqualTo: sp)
+        .get();
+
+    setState(() {
+      petDetailsList = querySnapshot.docs
+          .map((doc) => {
+                'name': doc['name'].toString(),
+                'id': doc.id,
+                'image': doc['image'].toString(),
+              })
+          .toList();
+    });
   }
 }

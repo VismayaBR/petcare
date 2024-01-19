@@ -63,354 +63,167 @@ class _AddPetState extends State<AddPet> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
-        child: Column(
+        child: ListView(
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: 50,),
             Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: SizedBox(
-                height: 55,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        // Handle navigation back
-                      },
-                      child: Icon(
-                        Icons.arrow_back,
-                        size: 30,
-                      ),
-                    ),
-                  ],
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+              child: InkWell(
+                onTap: pickImage,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    color: Color.fromARGB(255, 255, 239, 233),
+                    height: 150,
+                    child: _image == null
+                        ? Center(child: Icon(Icons.upload))
+                        : Image.file(File(_image!.path), fit: BoxFit.cover),
+                  ),
                 ),
               ),
             ),
-            Expanded(
-              child: ListView(
+            Padding(
+              padding: const EdgeInsets.only(left: 34, top: 10, bottom: 4),
+              child: Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
-                    child: InkWell(
-                      onTap: pickImage,
-                      child: SizedBox(
-                        child: Icon(Icons.upload),
-                      ),
-                    ),
-                  ),
-                   Padding(
-                    padding:
-                        const EdgeInsets.only(left: 34, top: 10, bottom: 4),
-                    child: Text(
-                      "Name",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 27, right: 27),
-                    child: Container(
-                      height: 48,
-                      width: double.infinity,
-                      child: Center(
-                        child: TextFormField(
-                          onChanged: (value) => name = value,
-                          decoration: InputDecoration(
-                              enabledBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              icon: Padding(
-                                padding: const EdgeInsets.only(left: 11),
-                              ),
-                              hintText: "Enter pets name"),
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1.4,
-                              color: Color.fromARGB(255, 200, 139, 6)),
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 38, top: 10, bottom: 4),
-                    child: Text(
-                      "Age",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 27, right: 27),
-                      child: Container(
-                        height: 48,
-                        width: double.infinity,
-                        child: Center(
-                          child: TextFormField(
-                            onChanged: (value) => age = value,
-                            decoration: InputDecoration(
-                                enabledBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                icon: Padding(
-                                  padding: const EdgeInsets.only(left: 11),
-                                ),
-                                hintText: "Enter pets age"),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1.4,
-                                color: Color.fromARGB(255, 200, 139, 6)),
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 36, top: 10),
-                        child: SizedBox(
-                          width: screenSize.width / 2.5,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Height",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 14, top: 10),
-                        child: SizedBox(
-                          width: screenSize.width / 2.5,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Weight",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 27),
-                          child: Container(
-                            height: 48,
-                            width: screenSize.width / 2.5,
-                            child: Center(
-                              child: TextFormField(
-                                onChanged: (value) => height = value,
-                                decoration: InputDecoration(
-                                    enabledBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    icon: Padding(
-                                      padding: const EdgeInsets.only(left: 11),
-                                    ),
-                                    hintText: "Enter height"),
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 1.4,
-                                    color: Color.fromARGB(255, 200, 139, 6)),
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 27),
-                          child: Container(
-                            height: 48,
-                            width: screenSize.width / 2.5,
-                            child: Center(
-                              child: TextFormField(
-                                onChanged: (value) => height = value,
-                                decoration: InputDecoration(
-                                    enabledBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    icon: Padding(
-                                      padding: const EdgeInsets.only(left: 11),
-                                    ),
-                                    hintText: "Enter weight"),
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 1.4,
-                                    color: Color.fromARGB(255, 200, 139, 6)),
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 34,
-                      bottom: 4,
-                      top: 10,
-                    ),
-                    child: Text(
-                      "Heart rate",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 25, right: 25),
-                      child: Container(
-                        height: 48,
-                        width: double.infinity,
-                        child: Center(
-                          child: TextFormField(
-                            onChanged: (value) => heartrate = value,
-                            decoration: InputDecoration(
-                                enabledBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                icon: Padding(
-                                  padding: const EdgeInsets.only(left: 11),
-                                ),
-                                hintText: "Enter heart rate"),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1.4,
-                                color: Color.fromARGB(255, 200, 139, 6)),
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 34, bottom: 7, top: 10),
-                    child: Text(
-                      "Bp",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 25, right: 25),
-                      child: Container(
-                        height: 48,
-                        width: double.infinity,
-                        child: Center(
-                          child: TextFormField(
-                            onChanged: (value) => bp = value,
-                            decoration: InputDecoration(
-                                enabledBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                icon: Padding(
-                                  padding: const EdgeInsets.only(left: 11),
-                                ),
-                                hintText: "Enter Bp"),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1.4,
-                                color: Color.fromARGB(255, 200, 139, 6)),
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20, left: 77.0, right: 77.0, bottom: 70),
-                      child: InkWell(
-                        onTap: () async {
-                          List<String> monthNames = [
-                            'January', 'February', 'March', 'April', 'May', 'June',
-                            'July', 'August', 'September', 'October', 'November', 'December',
-                          ];
-
-                          String currentMonth = monthNames[DateTime.now().month - 1];
-
-                          await uploadImage(); // Make sure to call uploadImage before adding to Firestore
-                          SharedPreferences spref = await SharedPreferences.getInstance();
-                          var sp = spref.getString('id');
-                          await FirebaseFirestore.instance.collection("petlist").add({
-                            'user_id':sp,
-                            "name": name,
-                            "age": age,
-                            "height": height,
-                            "weight": weight,
-                            "heartrate": heartrate,
-                            "bp": bp,
-                            "month": currentMonth,
-                            'image': imageUrl
-                          });
-                           await FirebaseFirestore.instance.collection("petlist").add({
-                            'user_id':sp,
-                           
-                            "name": name,
-                            "age": age,
-                            "height": height,
-                            "weight": weight,
-                            "heartrate": heartrate,
-                            "bp": bp,
-                            "month": currentMonth,
-                            'image': imageUrl
-                          });
-
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => Navigation(),
-                          ));
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 234, 227, 236),
-                                  blurRadius: 8,
-                                  spreadRadius: 5,
-                                )
-                              ],
-                              color: Color.fromARGB(250, 2, 120, 63),
-                              borderRadius: BorderRadius.all(Radius.circular(10))),
-                          child: Center(
-                              child: Text(
-                                "Add",
-                                style: TextStyle(fontSize: 16, color: Colors.white),
-                              )),
-                        ),
-                      ),
-                    ),
+                  Text(
+                    "Name",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 27, right: 27),
+              child: Container(
+                height: 48,
+                width: double.infinity,
+                child: Center(
+                  child: TextFormField(
+                    onChanged: (value) => name = value,
+                    decoration: InputDecoration(
+                        enabledBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        icon: Padding(
+                          padding: const EdgeInsets.only(left: 11),
+                        ),
+                        hintText: "Enter pets name"),
+                  ),
+                ),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1.4, color: Color.fromARGB(255, 200, 139, 6)),
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 38, top: 10, bottom: 4),
+              child: Row(
+                children: [
+                  Text(
+                    "Age",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 27, right: 27),
+                child: Container(
+                  height: 48,
+                  width: double.infinity,
+                  child: Center(
+                    child: TextFormField(
+                      onChanged: (value) => age = value,
+                      decoration: InputDecoration(
+                          enabledBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 11),
+                          ),
+                          hintText: "Enter pets age"),
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1.4, color: Color.fromARGB(255, 200, 139, 6)),
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 20, left: 77.0, right: 77.0, bottom: 70),
+                child: InkWell(
+                  onTap: () async {
+                    List<String> monthNames = [
+                      'January',
+                      'February',
+                      'March',
+                      'April',
+                      'May',
+                      'June',
+                      'July',
+                      'August',
+                      'September',
+                      'October',
+                      'November',
+                      'December',
+                    ];
+
+                    String currentMonth = monthNames[DateTime.now().month - 1];
+
+                    await uploadImage(); // Make sure to call uploadImage before adding to Firestore
+                    SharedPreferences spref =
+                        await SharedPreferences.getInstance();
+                    var sp = spref.getString('id');
+                    await FirebaseFirestore.instance.collection("petlist").add({
+                      'user_id': sp,
+                      "name": name,
+                      "age": age,
+                      // "height": height,
+                      // "weight": weight,
+                      // "heartrate": heartrate,
+                      // "bp": bp,
+                      "month": currentMonth,
+                      'image': imageUrl
+                    });
+
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Navigation(),
+                        ));
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromARGB(255, 234, 227, 236),
+                            blurRadius: 8,
+                            spreadRadius: 5,
+                          )
+                        ],
+                        color: Color.fromARGB(250, 2, 120, 63),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Center(
+                        child: Text(
+                      "Add",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    )),
+                  ),
+                ),
               ),
             ),
           ],

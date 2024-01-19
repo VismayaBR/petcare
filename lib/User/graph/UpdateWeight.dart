@@ -66,10 +66,12 @@ class _UpdateWeightState extends State<UpdateWeight> {
               ),
               SizedBox(height: 18),
               TextFormField(
+                
                 controller: weight,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Enter Weight',
+                  
+                  labelText: 'Enter Weight in Kg',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {

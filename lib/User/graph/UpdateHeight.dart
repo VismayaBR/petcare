@@ -71,12 +71,12 @@ class _UpdateHeightState extends State<UpdateHeight> {
                 controller: height,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Enter Height',
+                  labelText: 'Enter Height in cm',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the height.';
+                    return 'Please enter the height in cm.';
                   }
                   return null;
                 },

@@ -1,9 +1,9 @@
-import 'package:custom_rating_bar/custom_rating_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:intl/intl.dart';
 import 'package:petcare_new/Doctor/DoctorProfileView.dart';
+import 'package:petcare_new/Doctor/graph.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_star_rating/simple_star_rating.dart';
 
 class DoctorHome extends StatefulWidget {
   const DoctorHome({super.key});
@@ -13,18 +13,10 @@ class DoctorHome extends StatefulWidget {
 }
 
 class _DoctorHomeState extends State<DoctorHome> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Call your function to retrieve user ID here
-//     retrieveUserID();
-//   }
-//   Future<dynamic> retrieveUserID() async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   String userId = prefs.getString('name') ?? ''; // Retrieve the user ID
-
-// return userId;
-//   }
+  @override
+  void initState() {
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +39,6 @@ class _DoctorHomeState extends State<DoctorHome> {
                   child: Center(
                     child: Text(
                       "Appointments  10",
-                      
                     ),
                   ),
                   height: 47,
@@ -101,130 +92,107 @@ class _DoctorHomeState extends State<DoctorHome> {
         ),
       ),
       Expanded(
-        child: ListView(children: [
-          Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16.0,
+            mainAxisSpacing: 16.0,
+          ),
+          itemCount: bookingsList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InkWell(
+                onTap: () {
+                  print('object');
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return Graph(
+                      pet_id: '${bookingsList[index]['pet']}',
+                    );
+                  }));
+                },
+                child: Container(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => Doctorappointments()));
+                          print('object');
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Graph(
+                              pet_id: '${bookingsList[index]['pet']}',
+                            );
+                          }));
                         },
                         child: SizedBox(
-                          width: screenSize.width / 2.55,
+                          width: 130,
                           height: 100,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "asset/catpic.jpg",
+                            child: Image.network(
+                              "${bookingsList[index]['img']}",
                               fit: BoxFit.fill,
                             ),
                           ),
                         ),
                       ),
-                      Text("Issue"),
-                      Text("Date"),
-                      Text("Time"),
+                      Text("Token : ${bookingsList[index]['token']}"),
+                      Text("${bookingsList[index]['date']}"),
+                      // Text("${bookingsList[index]['time']}"),
                     ],
                   ),
                   height: 190,
-                  width: screenSize.width / 2.5,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                          color: Color.fromARGB(255, 109, 74, 5), width: 1.5)),
-                ),
-                InkWell(
-                  // onTap: () {
-                  //   Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //           builder: (context) => Doctorappointments()));
-                  // },
-                  child: Container(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: screenSize.width / 2.55,
-                          height: 100,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "asset/catpic.jpg",
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                        Text("Issue"),
-                        Text("Date"),
-                        Text("Time"),
-                      ],
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: Color.fromARGB(255, 195, 194, 194),
+                      width: 1,
                     ),
-                    height: 190,
-                    width: screenSize.width / 2.5,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(
-                            color: Color.fromARGB(255, 109, 74, 5),
-                            width: 1.5)),
+                    color: Color.fromRGBO(250, 241, 238, 1),
                   ),
                 ),
-              ],
-            ),
-          ),
-        ]),
+              ),
+            );
+          },
+        ),
       )
     ])));
   }
+
+  List<Map<String, dynamic>> bookingsList = [];
+
+  Future<void> getData() async {
+    SharedPreferences spref = await SharedPreferences.getInstance();
+    var sp = spref.getString('id');
+    print('--------------------------$sp');
+
+    // Get the current date in the format used in Firestore
+    String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('bookings')
+        .where('doctot_id', isEqualTo: sp)
+        .where('date',
+            isEqualTo: currentDate) // Add this filter for the current date
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      setState(() {
+        // Clear the existing data
+        // bookingsList.clear();
+
+        // Process the data and add it to the list
+        for (QueryDocumentSnapshot document in querySnapshot.docs) {
+          Map<String, dynamic> bookingData =
+              document.data() as Map<String, dynamic>;
+          bookingsList.add(bookingData);
+          print(bookingsList);
+        }
+      });
+    } else {
+      print('No bookings found for the doctor on the current date.');
+    }
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Stack(
-//       children: [
-//       
-//         ]),
-//         Stack(
-//           children: [
-//             Padding(
-//               padding: const EdgeInsets.only(right: 30, top: 125),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.end,
-//                 children: [
-//                   CircleAvatar(
-//                     radius: 18,
-//                     child: Center(
-//                       child: IconButton(
-//                           onPressed: () {},
-//                           icon: Icon(
-//                             Icons.edit,
-//                           )),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ],
-//     ));
-//   }
-// }
